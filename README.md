@@ -8,6 +8,7 @@ AI-Powered Project Management System with Discord Integration
 <img width="80" height="20" alt="image" src="https://github.com/user-attachments/assets/26464321-4c97-446e-bc72-4b085028f230" />
 
 ✨ Overview
+
 HackFlow is a full-stack, AI-powered project management system designed for hackathon teams and agile developers. It seamlessly integrates with Discord, allowing teams to create, manage, and track tasks using natural language commands while maintaining a beautiful Kanban-style web interface.
 🔑 Key Value Proposition
 🗣️ Natural Language Task Creation: Create tasks in Discord using everyday language — no complex syntax required
