@@ -3,8 +3,6 @@
 
 AI-Powered Project Management System with Discord Integration
 
-<img width="82" height="20" alt="image" src="https://github.com/user-attachments/assets/eb22cb1f-e05a-42ee-82a0-b8eedcc323ff" />
-
 <img width="58" height="20" alt="image" src="https://github.com/user-attachments/assets/63526a62-74bc-43eb-97da-3fb4873d8032" />
 
 <img width="120" height="20" alt="image" src="https://github.com/user-attachments/assets/c409dbf4-6a9b-45b7-974d-42266292d286" />
