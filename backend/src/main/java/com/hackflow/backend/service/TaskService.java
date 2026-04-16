@@ -16,64 +16,61 @@ public class TaskService {
     
     @Autowired
     private DiscordNotificationService discordNotificationService;
-
-    // Create a new task
+    
+    // CREATE: Add new task
     public Task createTask(Task task) {
-    task.setCreatedAt(LocalDateTime.now());
-    task.setUpdatedAt(LocalDateTime.now());
-    
-    // Set default status if not provided
-    if (task.getStatus() == null || task.getStatus().isEmpty()) {
-        task.setStatus("Backlog");
+        // Set timestamps
+        task.setCreatedAt(LocalDateTime.now());
+        task.setUpdatedAt(LocalDateTime.now());
+        
+        // Set default status if not provided
+        if (task.getStatus() == null || task.getStatus().isEmpty()) {
+            task.setStatus("Backlog");
+        }
+        
+        // Save to database
+        Task savedTask = taskRepository.save(task);
+        
+        // Send Discord notification (async, doesn't block)
+        try {
+            discordNotificationService.sendTaskCreatedNotification(
+                savedTask.getTitle(),
+                savedTask.getDescription(),
+                savedTask.getAssigneeName(),
+                savedTask.getPriority(),
+                savedTask.getDifficulty(),
+                savedTask.getStatus()
+            );
+        } catch (Exception e) {
+            System.err.println("Discord notification failed: " + e.getMessage());
+        }
+        
+        return savedTask;
     }
     
-    // Save to database
-    Task savedTask = taskRepository.save(task);
-    
-    // Send Discord notification with ALL details
-    try {
-        discordNotificationService.sendTaskCreatedNotification(
-            savedTask.getTitle(),
-            savedTask.getDescription(),
-            savedTask.getAssigneeName(),
-            savedTask.getPriority(),
-            savedTask.getDifficulty(),
-            savedTask.getStatus()
-        );
-    } catch (Exception e) {
-        // Don't fail the request if Discord notification fails
-        System.err.println("Discord notification failed: " + e.getMessage());
-    }
-    
-    return savedTask;
-}
-
-    // Get all tasks
+    // READ: Get all tasks
     public List<Task> getAllTasks() {
         return taskRepository.findAll();
     }
-
-    // Get task by ID
-    public Optional<Task> getTaskById(String id) {
+    
+    // READ: Get task by ID (⚠️ Long instead of String)
+    public Optional<Task> getTaskById(Long id) {
         return taskRepository.findById(id);
     }
-
-    // Get tasks by status
+    
+    // READ: Filter by status
     public List<Task> getTasksByStatus(String status) {
         return taskRepository.findByStatus(status);
     }
-
-    // Get tasks by assignee
-    public List<Task> getTasksByAssignee(String assigneeId) {
-        return taskRepository.findByAssigneeId(assigneeId);
-    }
-
-    // Update a task
-    public Task updateTask(String id, Task updatedTask) {
+    
+    // UPDATE: Modify existing task (⚠️ Long instead of String)
+    public Task updateTask(Long id, Task updatedTask) {
         Optional<Task> existingTask = taskRepository.findById(id);
+        
         if (existingTask.isPresent()) {
             Task task = existingTask.get();
             
+            // Update fields if provided (null-check pattern)
             if (updatedTask.getTitle() != null) {
                 task.setTitle(updatedTask.getTitle());
             }
@@ -82,6 +79,11 @@ public class TaskService {
             }
             if (updatedTask.getStatus() != null) {
                 task.setStatus(updatedTask.getStatus());
+                
+                // Auto-set completedAt when status becomes "Done"
+                if ("Done".equals(updatedTask.getStatus()) && task.getCompletedAt() == null) {
+                    task.setCompletedAt(LocalDateTime.now());
+                }
             }
             if (updatedTask.getPriority() != null) {
                 task.setPriority(updatedTask.getPriority());
@@ -89,55 +91,34 @@ public class TaskService {
             if (updatedTask.getDifficulty() != null) {
                 task.setDifficulty(updatedTask.getDifficulty());
             }
-            if (updatedTask.getAssigneeId() != null) {
-                task.setAssigneeId(updatedTask.getAssigneeId());
-            }
             if (updatedTask.getAssigneeName() != null) {
                 task.setAssigneeName(updatedTask.getAssigneeName());
             }
             
             task.setUpdatedAt(LocalDateTime.now());
-            
-            // If status changed to Done, set completedAt
-            if ("Done".equals(updatedTask.getStatus()) && task.getCompletedAt() == null) {
-                task.setCompletedAt(LocalDateTime.now());
-            }
-            
-            Task savedTask = taskRepository.save(task);
-            
-            // Send Discord notification for status change
-            if (updatedTask.getStatus() != null) {
-                discordNotificationService.sendTaskStatusUpdateNotification(
-                    savedTask.getTitle(),
-                    savedTask.getStatus(),
-                    savedTask.getAssigneeName()
-                );
-            }
-            
-            return savedTask;
+            return taskRepository.save(task);
         }
-        return null;
+        return null;  // Task not found
     }
-
-    // Delete a task
-    public boolean deleteTask(String id) {
+    
+    // DELETE: Remove task (⚠️ Long instead of String)
+    public boolean deleteTask(Long id) {
         try {
-            // Get task details before deleting (for notification)
-            Optional<Task> taskToDelete = taskRepository.findById(id);
-            
             taskRepository.deleteById(id);
-            
-            // Send Discord notification
-            if (taskToDelete.isPresent()) {
-                discordNotificationService.sendTaskDeletedNotification(
-                    taskToDelete.get().getTitle()
-                );
-            }
-            
             return true;
         } catch (Exception e) {
             System.err.println("Error deleting task: " + e.getMessage());
             return false;
         }
+    }
+    
+    // NEW: Search tasks by keyword
+    public List<Task> searchTasks(String keyword) {
+        return taskRepository.searchByKeyword(keyword);
+    }
+    
+    // NEW: Count tasks by status
+    public long countByStatus(String status) {
+        return taskRepository.countByStatus(status);
     }
 }

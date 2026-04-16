@@ -9,65 +9,59 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/tasks")
-@CrossOrigin(origins = "http://localhost:5173") // Allow frontend to access
 public class TaskController {
-
+    
     @Autowired
     private TaskService taskService;
-
-    // Create a new task
-    @PostMapping
-    public ResponseEntity<Task> createTask(@RequestBody Task task) {
-        Task createdTask = taskService.createTask(task);
-        return ResponseEntity.ok(createdTask);
-    }
-
-    // Get all tasks
+    
+    // GET /api/tasks - Get all tasks
     @GetMapping
-    public ResponseEntity<List<Task>> getAllTasks() {
-        List<Task> tasks = taskService.getAllTasks();
-        return ResponseEntity.ok(tasks);
+    public List<Task> getAllTasks() {
+        return taskService.getAllTasks();
     }
-
-    // Get task by ID
+    
+    // GET /api/tasks/{id} - Get task by ID (⚠️ Long instead of String)
     @GetMapping("/{id}")
-    public ResponseEntity<Task> getTaskById(@PathVariable String id) {
+    public ResponseEntity<Task> getTaskById(@PathVariable Long id) {
         return taskService.getTaskById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
     }
-
-    // Get tasks by status
-    @GetMapping("/status/{status}")
-    public ResponseEntity<List<Task>> getTasksByStatus(@PathVariable String status) {
-        List<Task> tasks = taskService.getTasksByStatus(status);
-        return ResponseEntity.ok(tasks);
+    
+    // POST /api/tasks - Create new task
+    @PostMapping
+    public Task createTask(@RequestBody Task task) {
+        return taskService.createTask(task);
     }
-
-    // Get tasks by assignee
-    @GetMapping("/assignee/{assigneeId}")
-    public ResponseEntity<List<Task>> getTasksByAssignee(@PathVariable String assigneeId) {
-        List<Task> tasks = taskService.getTasksByAssignee(assigneeId);
-        return ResponseEntity.ok(tasks);
-    }
-
-    // Update a task
+    
+    // PUT /api/tasks/{id} - Update task (⚠️ Long instead of String)
     @PutMapping("/{id}")
-    public ResponseEntity<Task> updateTask(@PathVariable String id, @RequestBody Task task) {
-        Task updatedTask = taskService.updateTask(id, task);
-        if (updatedTask != null) {
-            return ResponseEntity.ok(updatedTask);
-        }
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<Task> updateTask(
+            @PathVariable Long id,
+            @RequestBody Task updatedTask) {
+        Task result = taskService.updateTask(id, updatedTask);
+        return result != null
+            ? ResponseEntity.ok(result)
+            : ResponseEntity.notFound().build();
     }
-
-    // Delete a task
+    
+    // DELETE /api/tasks/{id} - Delete task (⚠️ Long instead of String)
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTask(@PathVariable String id) {
-        boolean deleted = taskService.deleteTask(id);
-        if (deleted) {
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
+        return taskService.deleteTask(id)
+            ? ResponseEntity.noContent().build()
+            : ResponseEntity.notFound().build();
+    }
+    
+    // NEW: GET /api/tasks/search?keyword=... - Search tasks
+    @GetMapping("/search")
+    public List<Task> searchTasks(@RequestParam String keyword) {
+        return taskService.searchTasks(keyword);
+    }
+    
+    // NEW: GET /api/tasks/count/by-status?status=... - Count tasks
+    @GetMapping("/count/by-status")
+    public long countByStatus(@RequestParam String status) {
+        return taskService.countByStatus(status);
     }
 }

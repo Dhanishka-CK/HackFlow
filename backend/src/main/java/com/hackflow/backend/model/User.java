@@ -3,35 +3,43 @@ package com.hackflow.backend.model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "users")
+@Entity
+@Table(name = "users")
 public class User {
-
+    
     @Id
-    private String id;
-
-    @Field(name = "username")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    @Column(unique = true, nullable = false, length = 100)
     private String username;
-
-    @Field(name = "email")
+    
+    @Column(unique = true, nullable = false, length = 255)
     private String email;
-
-    @Field(name = "discordId")
-    private String discordId;
-
-    @Field(name = "role")
-    private String role; // Backend, Frontend, Full Stack, Designer, QA, DevOps, etc.
-
-    @Field(name = "isActive")
-    private Boolean isActive;
-
-    @Field(name = "joinedAt")
-    private LocalDateTime joinedAt;
+    
+    @Column(name = "password_hash", nullable = false, length = 255)
+    private String passwordHash;
+    
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+    
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+    
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+    
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 }

@@ -1,19 +1,26 @@
 package com.hackflow.backend.repository;
 
 import com.hackflow.backend.model.User;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.Optional;
+import java.util.List;
 
 @Repository
-public interface UserRepository extends MongoRepository<User, String> {
-
-    // Find user by Discord ID
-    Optional<User> findByDiscordId(String discordId);
-
-    // Find user by email
-    Optional<User> findByEmail(String email);
-
+public interface UserRepository extends JpaRepository<User, Long> {
+    
     // Find user by username
     Optional<User> findByUsername(String username);
+    
+    // Find user by email
+    Optional<User> findByEmail(String email);
+    
+    // Check if username exists
+    boolean existsByUsername(String username);
+    
+    // Check if email exists
+    boolean existsByEmail(String email);
+    
+    // Find users by username containing keyword
+    List<User> findByUsernameContaining(String keyword);
 }

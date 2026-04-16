@@ -3,56 +3,58 @@ package com.hackflow.backend.model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "tasks")
+@Entity
+@Table(name = "tasks")
 public class Task {
-
+    
     @Id
-    private String id;
-
-    @Field(name = "title")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    @Column(nullable = false, length = 255)
     private String title;
-
-    @Field(name = "description")
+    
+    @Column(columnDefinition = "TEXT")
     private String description;
-
-    @Field(name = "status")
-    private String status; // Backlog, Todo, In Progress, Done
-
-    @Field(name = "priority")
-    private String priority; // Low, Medium, High
-
-    @Field(name = "difficulty")
-    private String difficulty; // Easy, Medium, Hard
-
-    @Field(name = "assigneeId")
-    private String assigneeId;
-
-    @Field(name = "assigneeName")
+    
+    @Column(length = 50)
+    private String status = "Backlog";
+    
+    @Column(length = 20)
+    private String priority = "Medium";
+    
+    @Column(length = 20)
+    private String difficulty = "Medium";
+    
+    @Column(name = "assignee_name", length = 100)
     private String assigneeName;
-
-    @Field(name = "createdBy")
+    
+    @Column(name = "created_by", length = 100)
     private String createdBy;
-
-    @Field(name = "createdAt")
+    
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
-
-    @Field(name = "updatedAt")
+    
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-
-    @Field(name = "completedAt")
+    
+    @Column(name = "completed_at")
     private LocalDateTime completedAt;
-
-    @Field(name = "tags")
-    private String[] tags;
-
-    @Field(name = "comments")
-    private String[] comments;
+    
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+    
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 }

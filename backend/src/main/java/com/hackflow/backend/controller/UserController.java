@@ -9,59 +9,63 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin(origins = "http://localhost:5173") // Allow frontend to access
 public class UserController {
-
+    
     @Autowired
     private UserService userService;
-
-    // Create a new user
-    @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user) {
-        User createdUser = userService.createUser(user);
-        return ResponseEntity.ok(createdUser);
-    }
-
-    // Get all users
+    
+    // GET /api/users - Get all users
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userService.getAllUsers();
-        return ResponseEntity.ok(users);
+    public List<User> getAllUsers() {
+        return userService.getAllUsers();
     }
-
-    // Get user by ID
+    
+    // GET /api/users/{id} - Get user by ID (⚠️ Long instead of String)
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable String id) {
+    public ResponseEntity<User> getUserById(@PathVariable Long id) {
         return userService.getUserById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
     }
-
-    // Get user by Discord ID
-    @GetMapping("/discord/{discordId}")
-    public ResponseEntity<User> getUserByDiscordId(@PathVariable String discordId) {
-        return userService.getUserByDiscordId(discordId)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    
+    // POST /api/users - Create new user
+    @PostMapping
+    public User createUser(@RequestBody User user) {
+        return userService.createUser(user);
     }
-
-    // Update a user
+    
+    // PUT /api/users/{id} - Update user (⚠️ Long instead of String)
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable String id, @RequestBody User user) {
-        User updatedUser = userService.updateUser(id, user);
-        if (updatedUser != null) {
-            return ResponseEntity.ok(updatedUser);
-        }
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<User> updateUser(
+            @PathVariable Long id,
+            @RequestBody User updatedUser) {
+        User result = userService.updateUser(id, updatedUser);
+        return result != null
+            ? ResponseEntity.ok(result)
+            : ResponseEntity.notFound().build();
     }
-
-    // Delete a user
+    
+    // DELETE /api/users/{id} - Delete user (⚠️ Long instead of String)
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable String id) {
-        boolean deleted = userService.deleteUser(id);
-        if (deleted) {
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        return userService.deleteUser(id)
+            ? ResponseEntity.noContent().build()
+            : ResponseEntity.notFound().build();
+    }
+    
+    // GET /api/users/by-username?username=... - Get user by username
+    @GetMapping("/by-username")
+    public ResponseEntity<User> getUserByUsername(@RequestParam String username) {
+        return userService.getUserByUsername(username)
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
+    }
+    
+    // GET /api/users/by-email?email=... - Get user by email
+    @GetMapping("/by-email")
+    public ResponseEntity<User> getUserByEmail(@RequestParam String email) {
+        return userService.getUserByEmail(email)
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
     }
 }
