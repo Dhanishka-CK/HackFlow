@@ -1,7 +1,7 @@
 
-🚀 HackFlow
+# HackFlow
 
-AI-Powered Project Management System with Discord Integration
+## AI-Powered Project Management System with Discord Integration
 
 <img width="58" height="20" alt="image" src="https://github.com/user-attachments/assets/63526a62-74bc-43eb-97da-3fb4873d8032" />
 
@@ -11,15 +11,16 @@ AI-Powered Project Management System with Discord Integration
 
 <img width="80" height="20" alt="image" src="https://github.com/user-attachments/assets/26464321-4c97-446e-bc72-4b085028f230" />
 
+<img width="110" height="20" alt="image" src="https://github.com/user-attachments/assets/bd1a3fe7-5d19-46b1-ba64-b768d79558e1" />
 
 
-✨ Overview
+## ✨ Overview
 
 HackFlow is a full-stack, AI-powered project management system designed for hackathon teams and agile developers. It seamlessly integrates with Discord, allowing teams to create, manage, and track tasks using natural language commands while maintaining a beautiful Kanban-style web interface.
 
 
 
-🔑 Key Value Proposition
+## 🔑 Key Value Proposition
 
 🗣️ Natural Language Task Creation: Create tasks in Discord using everyday language — no complex syntax required
 
@@ -33,10 +34,10 @@ HackFlow is a full-stack, AI-powered project management system designed for hack
 
 
 
-🎯 Features
+## 🎯 Features
 
 
-🤖 Discord Bot Integration
+## 🤖 Discord Bot Integration
 
 
 ✅ Create tasks using !task commands with natural language
@@ -51,7 +52,7 @@ HackFlow is a full-stack, AI-powered project management system designed for hack
 
 
 
-🎨 Web Application
+## 🎨 Web Application
 
 ✅ Beautiful Kanban board with drag-and-drop support (Backlog → Todo → In Progress → Done)
 
@@ -65,7 +66,7 @@ HackFlow is a full-stack, AI-powered project management system designed for hack
 
 
 
-🧠 AI Intelligence
+## 🧠 AI Intelligence
 
 ✅ Google Gemini AI analyzes Discord messages to extract structured task data
 
@@ -73,11 +74,11 @@ HackFlow is a full-stack, AI-powered project management system designed for hack
 
 ✅ Automatic priority/difficulty detection from keywords ("urgent" → High, "quick" → Easy)
 
-✅ Assignee extraction from mentions ("for Sarah", "assign to John")
+✅ Assignee extraction from mentions ("for Dhanishka")
 
 
 
-🔗 Two-Way Sync
+## 🔗 Two-Way Sync
 
 ✅ Discord → Web: Tasks created via Discord appear in Kanban board within seconds
 
@@ -87,26 +88,26 @@ HackFlow is a full-stack, AI-powered project management system designed for hack
 
 
 
-🔐 Security & Best Practices
+## 🔐 Security & Best Practices
 
 ✅ Sensitive credentials stored in .env files (excluded via .gitignore)
 
 ✅ .env.example templates provided for easy setup
 
-✅ MongoDB Atlas with SSL/TLS encryption
+✅ Java Database Connectivity
 
 ✅ Discord webhook notifications with proper error handling
 
 
 
-🏗️ Architecture
-
-<img width="499" height="572" alt="image" src="https://github.com/user-attachments/assets/89cfed7b-0b6c-4401-a087-c3acb175cee9" />
+## 🏗️ Architecture
 
 
+<img width="603" height="392" alt="image" src="https://github.com/user-attachments/assets/bd4e99cf-fcb0-4e89-959d-bfa18e8e1aec" />
 
 
-🌐 Web App Usage
+
+## 🌐 Web App Usage
 
 
 🎨 Kanban Board
@@ -141,7 +142,7 @@ Delete Task: Click the 🗑️ icon to remove a task permanently.
 
 
 
-🔔 Real-Time Updates
+## 🔔 Real-Time Updates
 
 The frontend polls the backend every 5 seconds for task updates
 
@@ -153,7 +154,7 @@ Changes made in the web app trigger Discord webhook notifications
 
 
 
-📁 Project Structure
+## 📁 Project Structure
 
 
 <img width="514" height="871" alt="image" src="https://github.com/user-attachments/assets/2f9bae8b-dc4a-4a35-9337-e44fce404bd7" />
@@ -161,9 +162,9 @@ Changes made in the web app trigger Discord webhook notifications
 
 
 
-Acknowledgments
+## Tools
 
-🦎 MongoDB Atlas - For providing a free, cloud-hosted database with SSL support
+🦎 MySQL -Reliable, ACID-compliant relational database
 
 💬 Discord Developer Platform - For the robust bot API and OAuth2 integration
 
